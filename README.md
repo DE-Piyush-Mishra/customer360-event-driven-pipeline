@@ -35,3 +35,16 @@ discarded/
 - Secrets are managed using Key Vault
 - The pipeline is designed to be reusable and easy to extend
 
+## How the pipeline works
+
+1. A file is dropped into the ADLS Gen2 `landing` folder.
+2. A storage event trigger in Azure Data Factory starts the pipeline.
+3. ADF passes the file name dynamically to a Databricks notebook.
+4. The Databricks notebook:
+   - Reads the file from the landing folder
+   - Checks for duplicate `order_id`
+   - Validates `order_status` using a lookup table
+   - Moves the file to `staging` or `discarded` based on the result
+5. The notebook exits with a status that can be tracked in ADF monitoring.
+
+
